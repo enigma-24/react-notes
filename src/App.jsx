@@ -16,13 +16,17 @@ const App = () => {
 	const addNote = (event) => {
 		event.preventDefault();
 		const newNoteObject = {
-			id: notes.length + 1,
 			content: newNote,
 			important: Math.random() < 0.5,
 		};
 
-		setNotes([...notes, newNoteObject]);
-		setNewNote('');
+		axios
+			.post('http://localhost:3001/notes', newNoteObject)
+			.then((response) => {
+				setNotes([...notes, response.data]);
+				setNewNote('');
+			})
+			.catch((error) => console.error(error));
 	};
 
 	const handleNoteChange = (event) => setNewNote(event.target.value);
