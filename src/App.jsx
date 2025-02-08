@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
+import noteService from './services/notes';
 import Note from './components/Note';
-import axios from 'axios';
 
 const App = () => {
 	const [notes, setNotes] = useState([]);
@@ -8,9 +8,7 @@ const App = () => {
 	const [showAll, setShowAll] = useState(true);
 
 	useEffect(() => {
-		axios
-			.get('http://localhost:3001/notes')
-			.then((response) => setNotes(response.data));
+		noteService.getAll().then((response) => setNotes(response.data));
 	}, []);
 
 	const addNote = (event) => {
@@ -20,8 +18,8 @@ const App = () => {
 			important: Math.random() < 0.5,
 		};
 
-		axios
-			.post('http://localhost:3001/notes', newNoteObject)
+		noteService
+			.create(newNoteObject)
 			.then((response) => {
 				setNotes([...notes, response.data]);
 				setNewNote('');
@@ -36,8 +34,8 @@ const App = () => {
 		const note = notes.find((note) => note.id === id);
 		const updatedNote = { ...note, important: !note.important };
 
-		axios
-			.put(url, updatedNote)
+		noteService
+			.update(id, updatedNote)
 			.then((response) =>
 				setNotes(notes.map((note) => (note.id === id ? response.data : note)))
 			);
