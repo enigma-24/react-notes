@@ -8,7 +8,7 @@ const App = () => {
 	const [showAll, setShowAll] = useState(true);
 
 	useEffect(() => {
-		noteService.getAll().then((response) => setNotes(response.data));
+		noteService.getAll().then((notes) => setNotes(notes));
 	}, []);
 
 	const addNote = (event) => {
@@ -20,8 +20,8 @@ const App = () => {
 
 		noteService
 			.create(newNoteObject)
-			.then((response) => {
-				setNotes([...notes, response.data]);
+			.then((newNote) => {
+				setNotes([...notes, newNote]);
 				setNewNote('');
 			})
 			.catch((error) => console.error(error));
@@ -30,14 +30,13 @@ const App = () => {
 	const handleNoteChange = (event) => setNewNote(event.target.value);
 
 	const toggleImportanceOf = (id) => {
-		const url = `http://localhost:3001/notes/${id}`;
 		const note = notes.find((note) => note.id === id);
 		const updatedNote = { ...note, important: !note.important };
 
 		noteService
 			.update(id, updatedNote)
-			.then((response) =>
-				setNotes(notes.map((note) => (note.id === id ? response.data : note)))
+			.then((modifiedNote) =>
+				setNotes(notes.map((note) => (note.id === id ? modifiedNote : note)))
 			);
 	};
 
